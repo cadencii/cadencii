@@ -230,14 +230,12 @@ namespace cadencii.media
             return m_total_samples;
         }
 
-        public void read(long start, int length, double[] left, double[] right)
+        private void read<ContainerT>(long start, int length, ContainerT left, ContainerT right, Action<ContainerT, int, double> set_container_value)
         {
             for (int i = 0; i < length; i++) {
-                left[i] = 0.0;
-                right[i] = 0.0;
+                set_container_value(left, i, 0.0);
+                set_container_value(right, i, 0.0);
             }
-            //left = new double[length];
-            //right = new double[length];
             if (!m_opened) {
                 return;
             }
@@ -252,14 +250,14 @@ namespace cadencii.media
                 if (i_start >= length) {
                     // 全部0で埋める必要のある場合.
                     for (int i = 0; i < length; i++) {
-                        left[i] = 0.0;
-                        right[i] = 0.0;
+                        set_container_value(left, i, 0.0);
+                        set_container_value(right, i, 0.0);
                     }
                     return;
                 } else {
                     for (int i = 0; i < i_start; i++) {
-                        left[i] = 0.0;
-                        right[i] = 0.0;
+                        set_container_value(left, i, 0.0);
+                        set_container_value(right, i, 0.0);
                     }
                 }
                 m_stream.Seek(m_header_offset, SeekOrigin.Begin);
@@ -273,14 +271,14 @@ namespace cadencii.media
                 if (i_end < 0) {
                     // 全部0で埋める必要のある場合
                     for (int i = 0; i < length; i++) {
-                        left[i] = 0.0;
-                        right[i] = 0.0;
+                        set_container_value(left, i, 0.0);
+                        set_container_value(right, i, 0.0);
                     }
                     return;
                 } else {
                     for (int i = i_end + 1; i < length; i++) {
-                        left[i] = 0.0;
-                        right[i] = 0.0;
+                        set_container_value(left, i, 0.0);
+                        set_container_value(right, i, 0.0);
                     }
                 }
             }
@@ -294,15 +292,15 @@ namespace cadencii.media
                         int ret = m_stream.Read(buf, 0, 4);
                         if (ret < 4) {
                             for (int j = i; j < length; j++) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
+                                set_container_value(left, j, 0.0);
+                                set_container_value(right, j, 0.0);
                             }
                             break;
                         }
                         short l = PortUtil.make_int16_le(buf, 0);
                         short r = PortUtil.make_int16_le(buf, 2);
-                        left[i] = l * coeff_left;
-                        right[i] = r * coeff_right;
+                        set_container_value(left, i, l * coeff_left);
+                        set_container_value(right, i, r * coeff_right);
                     }
                 } else {
                     byte[] buf = new byte[2];
@@ -311,14 +309,15 @@ namespace cadencii.media
                         int ret = m_stream.Read(buf, 0, 2);
                         if (ret < 2) {
                             for (int j = i; j < length; j++) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
+                                set_container_value(left, j, 0.0);
+                                set_container_value(right, j, 0.0);
                             }
                             break;
                         }
                         short l = PortUtil.make_int16_le(buf, 0);
-                        left[i] = l * coeff_left;
-                        right[i] = left[i];
+                        double value = l * coeff_left;
+                        set_container_value(left, i, value);
+                        set_container_value(right, i, value);
                     }
                 }
             } else {
@@ -330,13 +329,13 @@ namespace cadencii.media
                         int ret = m_stream.Read(buf, 0, 2);
                         if (ret < 2) {
                             for (int j = i; j < length; j++) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
+                                set_container_value(left, j, 0.0);
+                                set_container_value(right, j, 0.0);
                             }
                             break;
                         }
-                        left[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
-                        right[i] = ((0xff & buf[1]) - 64.0f) * coeff_right;
+                        set_container_value(left, i, ((0xff & buf[0]) - 64.0f) * coeff_left);
+                        set_container_value(right, i, ((0xff & buf[1]) - 64.0f) * coeff_right);
                     }
                 } else {
                     byte[] buf = new byte[1];
@@ -345,226 +344,42 @@ namespace cadencii.media
                         int ret = m_stream.Read(buf, 0, 1);
                         if (ret < 1) {
                             for (int j = i; j < length; j++) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
+                                set_container_value(left, j, 0.0);
+                                set_container_value(right, j, 0.0);
                             }
                             break;
                         }
-                        left[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
-                        right[i] = left[i];
+                        double value = ((0xff & buf[0]) - 64.0f) * coeff_left;
+                        set_container_value(left, i, value);
+                        set_container_value(right, i, value);
                     }
                 }
             }
+        }
+
+        public void read(long start, int length, double[] left, double[] right)
+        {
+            read<double[]>(start, length, left, right, (container, index, value) => container[index] = value);
+        }
+
+        public void read(long start, int length, float[] left, float[] right)
+        {
+            read<float[]>(start, length, left, right, (container, index, value) => container[index] = (float)value);
         }
 
         public void read(long start, int length, ByRef<float[]> left, ByRef<float[]> right)
         {
             left.value = new float[length];
             right.value = new float[length];
-            if (!m_opened) {
-                return;
-            }
-            int i_start = 0;
-            int i_end = length;
-            long required_sample_start = start + (long)(m_offset_seconds * m_sample_per_sec);
-            long required_sample_end = required_sample_start + length;
-            // 第required_sample_startサンプルから，第required_sample_endサンプルまでの読み込みが要求された．
-            if (required_sample_start < 0) {
-                i_start = -(int)required_sample_start + 1;
-                // 0 -> i_start - 1までは0で埋める
-                for (int i = 0; i < i_start; i++) {
-                    left.value[i] = 0.0f;
-                    right.value[i] = 0.0f;
-                }
-                m_stream.Seek(m_header_offset, SeekOrigin.Begin);
-            } else {
-                long loc = m_header_offset + m_byte_per_sample * m_channel * required_sample_start;
-                m_stream.Seek(loc, SeekOrigin.Begin);
-            }
-            if (m_total_samples < required_sample_end) {
-                i_end = length - 1 - (int)required_sample_end + m_total_samples;
-                // i_end + 1 -> length - 1までは0で埋める
-                for (int i = i_end + 1; i < length; i++) {
-                    left.value[i] = 0.0f;
-                    right.value[i] = 0.0f;
-                }
-            }
-
-            if (m_byte_per_sample == 2) {
-                if (m_channel == 2) {
-                    byte[] buf = new byte[4];
-                    float coeff_left = (float)(m_amplify_left / 32768.0f);
-                    float coeff_right = (float)(m_amplify_right / 32768.0f);
-                    for (int i = 0; i < length; i++) {
-                        int ret = m_stream.Read(buf, 0, 4);
-                        if (ret < 4) {
-                            for (int j = i; j < length; j++) {
-                                left.value[j] = 0.0f;
-                                right.value[j] = 0.0f;
-                            }
-                            break;
-                        }
-                        short l = PortUtil.make_int16_le(buf, 0);
-                        short r = PortUtil.make_int16_le(buf, 2);
-                        left.value[i] = l * coeff_left;
-                        right.value[i] = r * coeff_right;
-                    }
-                } else {
-                    byte[] buf = new byte[2];
-                    float coeff_left = (float)(m_amplify_left / 32768.0f);
-                    for (int i = 0; i < length; i++) {
-                        int ret = m_stream.Read(buf, 0, 2);
-                        if (ret < 2) {
-                            for (int j = i; j < length; j++) {
-                                left.value[j] = 0.0f;
-                                right.value[j] = 0.0f;
-                            }
-                            break;
-                        }
-                        short l = PortUtil.make_int16_le(buf, 0);
-                        left.value[i] = l * coeff_left;
-                        right.value[i] = left.value[i];
-                    }
-                }
-            } else {
-                if (m_channel == 2) {
-                    byte[] buf = new byte[2];
-                    float coeff_left = (float)(m_amplify_left / 64.0f);
-                    float coeff_right = (float)(m_amplify_right / 64.0f);
-                    for (int i = 0; i < length; i++) {
-                        int ret = m_stream.Read(buf, 0, 2);
-                        if (ret < 2) {
-                            for (int j = i; j < length; j++) {
-                                left.value[j] = 0.0f;
-                                right.value[j] = 0.0f;
-                            }
-                            break;
-                        }
-                        left.value[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
-                        right.value[i] = ((0xff & buf[1]) - 64.0f) * coeff_right;
-                    }
-                } else {
-                    byte[] buf = new byte[1];
-                    float coeff_left = (float)(m_amplify_left / 64.0f);
-                    for (int i = 0; i < length; i++) {
-                        int ret = m_stream.Read(buf, 0, 1);
-                        if (ret < 1) {
-                            for (int j = i; j < length; j++) {
-                                left.value[j] = 0.0f;
-                                right.value[j] = 0.0f;
-                            }
-                            break;
-                        }
-                        left.value[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
-                        right.value[i] = left.value[i];
-                    }
-                }
-            }
+            read<float[]>(start, length, left.value, right.value, (container, index, value) => container[index] = (float)value);
         }
 
         public unsafe void read(long start, int length, ref IntPtr ptr_left, ref IntPtr ptr_right)
         {
-            float* left = (float*)ptr_left.ToPointer();
-            float* right = (float*)ptr_right.ToPointer();
-            if (!m_opened) {
-                return;
-            }
-            int i_start = 0;
-            int i_end = length;
-            long required_sample_start = start + (long)(m_offset_seconds * m_sample_per_sec);
-            long required_sample_end = required_sample_start + length;
-            // 第required_sample_startサンプルから，第required_sample_endサンプルまでの読み込みが要求された．
-            if (required_sample_start < 0) {
-                i_start = -(int)required_sample_start + 1;
-                // 0 -> i_start - 1までは0で埋める
-                for (int i = 0; i < i_start; i++) {
-                    left[i] = 0.0f;
-                    right[i] = 0.0f;
-                }
-                m_stream.Seek(m_header_offset, SeekOrigin.Begin);
-            } else {
-                long loc = m_header_offset + m_byte_per_sample * m_channel * required_sample_start;
-                m_stream.Seek(loc, SeekOrigin.Begin);
-            }
-            if (m_total_samples < required_sample_end) {
-                i_end = length - 1 - (int)required_sample_end + m_total_samples;
-                // i_end + 1 -> length - 1までは0で埋める
-                for (int i = i_end + 1; i < length; i++) {
-                    left[i] = 0.0f;
-                    right[i] = 0.0f;
-                }
-            }
-
-            if (m_byte_per_sample == 2) {
-                if (m_channel == 2) {
-                    byte[] buf = new byte[4];
-                    float coeff_left = (float)(m_amplify_left / 32768.0f);
-                    float coeff_right = (float)(m_amplify_right / 32768.0f);
-                    for (int i = 0; i < length; i++) {
-                        int ret = m_stream.Read(buf, 0, 4);
-                        if (ret < 4) {
-                            for (int j = i; j < length; j++) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
-                            }
-                            break;
-                        }
-                        short l = PortUtil.make_int16_le(buf, 0);
-                        short r = PortUtil.make_int16_le(buf, 2);
-                        left[i] = l * coeff_left;
-                        right[i] = r * coeff_right;
-                    }
-                } else {
-                    byte[] buf = new byte[2];
-                    float coeff_left = (float)(m_amplify_left / 32768.0f);
-                    for (int i = 0; i < length; i++) {
-                        int ret = m_stream.Read(buf, 0, 2);
-                        if (ret < 2) {
-                            for (int j = i; j < length; j++) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
-                            }
-                            break;
-                        }
-                        short l = PortUtil.make_int16_le(buf, 0);
-                        left[i] = l * coeff_left;
-                        right[i] = left[i];
-                    }
-                }
-            } else {
-                if (m_channel == 2) {
-                    byte[] buf = new byte[2];
-                    float coeff_left = (float)(m_amplify_left / 64.0f);
-                    float coeff_right = (float)(m_amplify_right / 64.0f);
-                    for (int i = 0; i < length; i++) {
-                        int ret = m_stream.Read(buf, 0, 2);
-                        if (ret < 2) {
-                            for (int j = i; j < length; j++) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
-                            }
-                            break;
-                        }
-                        left[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
-                        right[i] = ((0xff & buf[1]) - 64.0f) * coeff_right;
-                    }
-                } else {
-                    byte[] buf = new byte[1];
-                    float coeff_left = (float)(m_amplify_left / 64.0f);
-                    for (int i = 0; i < length; i++) {
-                        int ret = m_stream.Read(buf, 0, 1);
-                        if (ret < 1) {
-                            for (int j = i; j < length; j++) {
-                                left[j] = 0.0f;
-                                right[j] = 0.0f;
-                            }
-                            break;
-                        }
-                        left[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
-                        right[i] = left[i];
-                    }
-                }
-            }
+            read<IntPtr>(start, length, ptr_left, ptr_right, (container, index, value) => {
+                float* buffer = (float*)container.ToPointer();
+                buffer[index] = (float)value;
+            });
         }
 
         public void close()
