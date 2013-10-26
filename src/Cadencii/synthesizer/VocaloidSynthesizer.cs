@@ -18,9 +18,9 @@ using VstSdk;
 using cadencii.dsp.v2.generator;
 using cadencii.vsq;
 
-namespace cadencii.vsti.vocaloid
+namespace cadencii.synthesizer
 {
-    unsafe class VocaloidVstDriver : VSTiDriverBase, IWaveGenerator, ISingingSynthesizer
+    unsafe class VocaloidVstDriver : VSTiDriverBase, ISingingSynthesizer
     {
         public event RenderCallback Rendered;
 
@@ -32,9 +32,10 @@ namespace cadencii.vsti.vocaloid
         private ITempoMaster tempo_master_;
         private int sample_rate_;
 
-        public VocaloidVstDriver(RendererKind kind)
+        public VocaloidVstDriver(RendererKind kind, string dll_path)
         {
             kind_ = kind;
+            path = dll_path;
         }
 
         public override RendererKind getRendererKind()
@@ -55,6 +56,10 @@ namespace cadencii.vsti.vocaloid
             }).ToList();
             tempo_master_ = sequence.TempoTable;
             sample_rate_ = sample_rate;
+
+            if (!loaded) {
+                base.open(sample_rate_, sample_rate_);
+            }
         }
 
         public void endSession()
