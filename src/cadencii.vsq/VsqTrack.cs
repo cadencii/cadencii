@@ -956,6 +956,11 @@ namespace cadencii.vsq
             return MetaText.getEventList().getElement(index);
         }
 
+        public IEnumerable<VsqEvent> events()
+        {
+            return MetaText.Events.Events;
+        }
+
         public VsqEvent findEventFromID(int internal_id)
         {
             return MetaText.getEventList().findFromID(internal_id);

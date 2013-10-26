@@ -239,6 +239,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SequenceConfig.cs" />
+    <Compile Include="synthesizer\VConnectSynthesizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="synthesizer\VocaloidSynthesizer.cs" />
     <Compile Include="SynthesizeWorker.cs" />
     <Compile Include="TestFormWorker.cs" />
