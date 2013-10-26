@@ -235,101 +235,23 @@ namespace cadencii.media
 
         public void append(float[] L)
         {
-            int total = L.Length;
-            if (m_bit_per_sample == 8) {
-                if (m_channel == 1) {
-                    for (int i = 0; i < total; i++) {
-                        m_stream.WriteByte((byte)((L[i] + 1.0f) * 127.5f));
-                    }
-                } else {
-                    for (int i = 0; i < total; i++) {
-                        byte b = (byte)((L[i] + 1.0f) * 127.5f);
-                        m_stream.WriteByte(b);
-                        m_stream.WriteByte(b);
-                    }
-                }
-            } else {
-                byte[] buf;
-                if (m_channel == 1) {
-                    for (int i = 0; i < total; i++) {
-                        buf = PortUtil.getbytes_int16_le((short)(L[i] * 32768f));
-                        writeByteArray(m_stream, buf, 2);
-                    }
-                } else {
-                    for (int i = 0; i < total; i++) {
-                        buf = PortUtil.getbytes_int16_le((short)(L[i] * 32768f));
-                        writeByteArray(m_stream, buf, 2);
-                        writeByteArray(m_stream, buf, 2);
-                    }
-                }
-            }
-            m_total_samples += (int)total;
+            append<float[]>(L, L, L.Length, (container, index) => container[index]);
         }
 
         public void append(double[] L)
         {
-            int total = L.Length;
-            if (m_bit_per_sample == 8) {
-                if (m_channel == 1) {
-                    for (int i = 0; i < total; i++) {
-                        m_stream.WriteByte((byte)((L[i] + 1.0) * 127.5));
-                    }
-                } else {
-                    for (int i = 0; i < total; i++) {
-                        byte b = (byte)((L[i] + 1.0) * 127.5);
-                        m_stream.WriteByte(b);
-                        m_stream.WriteByte(b);
-                    }
-                }
-            } else {
-                byte[] buf;
-                if (m_channel == 1) {
-                    for (int i = 0; i < total; i++) {
-                        buf = PortUtil.getbytes_int16_le((short)(L[i] * 32768.0));
-                        writeByteArray(m_stream, buf, 2);
-                    }
-                } else {
-                    for (int i = 0; i < total; i++) {
-                        buf = PortUtil.getbytes_int16_le((short)(L[i] * 32768.0));
-                        writeByteArray(m_stream, buf, 2);
-                        writeByteArray(m_stream, buf, 2);
-                    }
-                }
-            }
-            m_total_samples += (int)total;
+            append<double[]>(L, L, L.Length, (container, index) => container[index]);
         }
 
         public void append(float[] L, float[] R)
         {
-            int total = Math.Min(L.Length, R.Length);
-            if (m_bit_per_sample == 8) {
-                if (m_channel == 1) {
-                    for (int i = 0; i < total; i++) {
-                        m_stream.WriteByte((byte)((L[i] + R[i] + 2.0f) * 63.75f));
-                    }
-                } else {
-                    for (int i = 0; i < total; i++) {
-                        m_stream.WriteByte((byte)((L[i] + 1.0f) * 127.5f));
-                        m_stream.WriteByte((byte)((R[i] + 1.0f) * 127.5f));
-                    }
-                }
-            } else {
-                byte[] buf;
-                if (m_channel == 1) {
-                    for (int i = 0; i < total; i++) {
-                        buf = PortUtil.getbytes_int16_le((short)((L[i] + R[i]) * 16384f));
-                        writeByteArray(m_stream, buf, 2);
-                    }
-                } else {
-                    for (int i = 0; i < total; i++) {
-                        buf = PortUtil.getbytes_int16_le((short)(L[i] * 32768f));
-                        writeByteArray(m_stream, buf, 2);
-                        buf = PortUtil.getbytes_int16_le((short)(R[i] * 32768f));
-                        writeByteArray(m_stream, buf, 2);
-                    }
-                }
-            }
-            m_total_samples += (int)total;
+            int length = Math.Min(L.Length, R.Length);
+            append(L, R, length);
+        }
+
+        public void append(float[] L, float[] R, int length)
+        {
+            append<float[]>(L, R, Math.Min(L.Length, R.Length), (container, index) => container[index]);
         }
 
         public void append(double[] L, double[] R)
@@ -338,32 +260,37 @@ namespace cadencii.media
             append(L, R, length);
         }
 
-        public void append(double[] L, double[] R, int length)
+        public void append(double[] left, double[] right, int length)
+        {
+            append<double[]>(left, right, length, (container, index) => container[index]);
+        }
+
+        private void append<ContainerT>(ContainerT L, ContainerT R, int length, Func<ContainerT, int, double> get_container_value)
         {
             try {
                 if (m_bit_per_sample == 8) {
                     if (m_channel == 1) {
                         for (int i = 0; i < length; i++) {
-                            m_stream.WriteByte((byte)((L[i] + R[i] + 2.0) * 63.75));
+                            m_stream.WriteByte((byte)((get_container_value(L, i) + get_container_value(R, i) + 2.0) * 63.75));
                         }
                     } else {
                         for (int i = 0; i < length; i++) {
-                            m_stream.WriteByte((byte)((L[i] + 1.0) * 127.5));
-                            m_stream.WriteByte((byte)((R[i] + 1.0) * 127.5));
+                            m_stream.WriteByte((byte)((get_container_value(L, i) + 1.0) * 127.5));
+                            m_stream.WriteByte((byte)((get_container_value(R, i) + 1.0) * 127.5));
                         }
                     }
                 } else {
                     byte[] buf;
                     if (m_channel == 1) {
                         for (int i = 0; i < length; i++) {
-                            buf = PortUtil.getbytes_int16_le((short)((L[i] + R[i]) * 16384.0));
+                            buf = PortUtil.getbytes_int16_le((short)((get_container_value(L, i) + get_container_value(R, i)) * 16384.0));
                             writeByteArray(m_stream, buf, 2);
                         }
                     } else {
                         for (int i = 0; i < length; i++) {
-                            buf = PortUtil.getbytes_int16_le((short)(L[i] * 32768.0));
+                            buf = PortUtil.getbytes_int16_le((short)(get_container_value(L, i) * 32768.0));
                             writeByteArray(m_stream, buf, 2);
-                            buf = PortUtil.getbytes_int16_le((short)(R[i] * 32768.0));
+                            buf = PortUtil.getbytes_int16_le((short)(get_container_value(R, i) * 32768.0));
                             writeByteArray(m_stream, buf, 2);
                         }
                     }
