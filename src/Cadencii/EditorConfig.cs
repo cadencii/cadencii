@@ -671,6 +671,15 @@ namespace cadencii
             return "";
         }
 
+        public IEnumerable<string> resamplers()
+        {
+            yield return PathResampler;
+            foreach (var path in PathResamplers) {
+                yield return path;
+            }
+            yield break;
+        }
+
         /// <summary>
         /// 第index番目のUTAU互換合成器のパスを設定します
         /// </summary>
