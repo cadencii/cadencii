@@ -23,7 +23,7 @@ namespace cadencii
     /// </summary>
     public class VibratoPointIteratorBySec
     {
-        VsqFileEx vsq;
+        VsqFile vsq;
         VibratoBPList rate;
         int start_rate;
         VibratoBPList depth;
@@ -116,14 +116,14 @@ namespace cadencii
         {
         }
 
-        public VibratoPointIteratorBySec(VsqFileEx vsq,
-                                      VibratoBPList rate,
-                                      int start_rate,
-                                      VibratoBPList depth,
-                                      int start_depth,
-                                      int clock_start,
-                                      int clock_width,
-                                      float sec_resolution)
+        public VibratoPointIteratorBySec(VsqFile vsq,
+                                         VibratoBPList rate,
+                                         int start_rate,
+                                         VibratoBPList depth,
+                                         int start_depth,
+                                         int clock_start,
+                                         int clock_width,
+                                         float sec_resolution)
         {
             this.vsq = vsq;
             this.rate = rate;
