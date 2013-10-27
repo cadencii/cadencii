@@ -219,15 +219,15 @@ namespace cadencii
 
         public void process(double[] left, double[] right, int length)
         {
-            process<double>(left, right, length);
+            process<double>(left, right, length, _ => _);
         }
 
         public void process(float[] left, float[] right, int length)
         {
-            process<float>(left, right, length);
+            process<float>(left, right, length, _ => _);
         }
 
-        private void process<T>(T[] left, T[] right, int length)
+        private void process<T>(T[] left, T[] right, int length, Func<float, T> convert)
         {
             if (left == null || right == null) {
                 return;
@@ -250,8 +250,8 @@ namespace cadencii
                         int proc = (remain > BUFLEN) ? BUFLEN : remain;
                         aEffect.ProcessReplacing(IntPtr.Zero, new IntPtr(out_buffer), proc);
                         for (int i = 0; i < proc; i++) {
-                            left[i + offset] = convert<T>(left_ch[i]);
-                            right[i + offset] = convert<T>(right_ch[i]);
+                            left[i + offset] = convert(left_ch[i]);
+                            right[i + offset] = convert(right_ch[i]);
                         }
                         remain -= proc;
                         offset += proc;
@@ -260,12 +260,6 @@ namespace cadencii
             } catch (Exception ex) {
                 serr.println("vstidrv#process; ex=" + ex);
             }
-        }
-
-        private static T convert<T>(float value)
-        {
-            object o = value;
-            return (T)o;
         }
 
         public virtual void send(MidiEvent[] events, int delta_clocks = 0)
