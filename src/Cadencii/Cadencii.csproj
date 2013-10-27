@@ -240,6 +240,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SequenceConfig.cs" />
+    <Compile Include="synthesizer\AquesTone2Synthesizer.cs" />
+    <Compile Include="synthesizer\AquesToneSynthesizer.cs" />
+    <Compile Include="synthesizer\AquesToneSynthesizerBase.cs" />
     <Compile Include="synthesizer\UtauSynthesizer.cs">
       <SubType>Code</SubType>
     </Compile>
